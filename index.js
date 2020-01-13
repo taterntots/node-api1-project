@@ -36,13 +36,27 @@ server.get('/api/users/:id', (req, res) => {
     const id = req.params.id;
 
     database.findById(id)
-        .then(data => {
-            console.log('data', data);
-            res.status(200).json(data);
+        .then(find => {
+            console.log('find', find);
+            res.status(200).json(find);
         })
         .catch(error => {
             console.log(error);
-            res.status(500).json({ errorMessage: 'The user information could not be retrieved.' });
+            res.status(500).json({ errorMessage: 'The user information could not be retrieved' });
+        })
+})
+
+server.delete('/api/users/:id', (req, res) => {
+    const id = req.params.id;
+
+    database.remove(id)
+        .then(deleted => {
+            console.log('deleted', deleted);
+            res.status(200).json(deleted);
+        })
+        .catch(error => {
+            console.log(error);
+            res.status(500).json({ errorMessage: 'The user could not be removed' });
         })
 })
 
