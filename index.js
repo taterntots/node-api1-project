@@ -32,6 +32,20 @@ server.get('/api/users', (req, res) => {
         })
 })
 
+server.get('/api/users/:id', (req, res) => {
+    const id = req.params.id;
+
+    database.findById(id)
+        .then(data => {
+            console.log('data', data);
+            res.status(200).json(data);
+        })
+        .catch(error => {
+            console.log(error);
+            res.status(500).json({ errorMessage: 'The user information could not be retrieved.' });
+        })
+})
+
 //port
 const port = 8001;
 server.listen(port, () => {
