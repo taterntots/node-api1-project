@@ -8,7 +8,16 @@ server.use(express.json()); //needed to parse JSON
 
 //routes or endpoints
 server.post('/api/users', (req, res) => {
-    const hubData = req.body; //for this to work you need the server.use(express.json()); above
+    const userData = req.body; //for this to work you need the server.use(express.json()); above
+
+    database.insert(userData)
+        .then(data => {
+            res.status(201).json(data);
+        })
+        .catch(error => {
+            console.log(error);
+            res.status(500).json({ errorMessage: 'There was an error while saving the user to the database' });
+        })
 })
 
 server.get('/api/users', (req, res) => {
@@ -19,7 +28,7 @@ server.get('/api/users', (req, res) => {
         })
         .catch(error => {
             console.log(error);
-            res.status(500).json({ errorMessage: 'The users information could not be retrieved.' });
+            res.status(500).json({ errorMessage: 'The users information could not be retrieved' });
         })
 })
 
