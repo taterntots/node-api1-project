@@ -22,9 +22,9 @@ server.post('/api/users', (req, res) => {
 
 server.get('/api/users', (req, res) => {
     database.find()
-        .then(data => {
-            console.log('data', data);
-            res.status(200).json(data);
+        .then(users => {
+            console.log('users', users);
+            res.status(200).json(users);
         })
         .catch(error => {
             console.log(error);
@@ -36,9 +36,13 @@ server.get('/api/users/:id', (req, res) => {
     const id = req.params.id;
 
     database.findById(id)
-        .then(find => {
-            console.log('find', find);
-            res.status(200).json(find);
+        .then(user => {
+            if (user) {
+                console.log('find user', user);
+                res.status(200).json(user);
+            } else {
+                res.status(404).json({ errorMessage: 'The user with the specified ID does not exist' });
+            }
         })
         .catch(error => {
             console.log(error);
@@ -57,6 +61,20 @@ server.delete('/api/users/:id', (req, res) => {
         .catch(error => {
             console.log(error);
             res.status(500).json({ errorMessage: 'The user could not be removed' });
+        })
+})
+
+server.put('/api/users/:id', (req, res) => {
+    const id = req.params.id;
+
+    database.update(id, changes)
+        .then(edited => {
+            console.log('edited', edited);
+            res.status(200).json(edited);
+        })
+        .catch(error => {
+            console.log(error);
+            res.status(500).json({ errorMessage: 'The user information could not be modified' });
         })
 })
 
