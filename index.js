@@ -10,14 +10,19 @@ server.use(express.json()); //needed to parse JSON
 server.post('/api/users', (req, res) => {
     const userData = req.body; //for this to work you need the server.use(express.json()); above
 
-    database.insert(userData)
-        .then(data => {
-            res.status(201).json(data);
-        })
-        .catch(error => {
-            console.log(error);
-            res.status(500).json({ errorMessage: 'There was an error while saving the user to the database' });
-        })
+    if (!userData.name || !userData.bio) {
+        res.status(400).json({ errorMessage: 'Please provide name and bio for the user' });
+    } else {
+        database.insert(userData)
+            .then(user => {
+                console.log('added user', user);
+                res.status(201).json(user);
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(500).json({ errorMessage: 'There was an error while saving the user to the database' });
+            })
+    }
 })
 
 server.get('/api/users', (req, res) => {
