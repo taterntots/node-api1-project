@@ -75,16 +75,25 @@ server.delete('/api/users/:id', (req, res) => {
 
 server.put('/api/users/:id', (req, res) => {
     const id = req.params.id;
+    const changes = req.body;
 
-    database.update(id, changes)
-        .then(edited => {
-            console.log('edited', edited);
-            res.status(200).json(edited);
-        })
-        .catch(error => {
-            console.log(error);
-            res.status(500).json({ errorMessage: 'The user information could not be modified' });
-        })
+    if (!changes.name || !changes.bio) {
+        res.status(400).json({ errorMessage: 'Please provide name and bio for the user' });
+    } else {
+        database.update(id, changes)
+            .then(user => {
+                if (user) {
+                    console.log('user edited', user);
+                    res.status(200).json(user);
+                } else {
+                    res.status(404).json({ errorMessage: 'The user with the specified ID does not exist' });
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(500).json({ errorMessage: 'The user information could not be modified' });
+            })
+    }
 })
 
 //port
